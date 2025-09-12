@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covered Call App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Covered Call App</h1>
+            <p class="subtitle">Options Trading Application</p>
+        </header>
+        
+        <main>
+            <section class="welcome">
+                <h2>Welcome to Covered Call App</h2>
+                <p>An options trading application that uses models to predict the best stock options for covered calls.</p>
+            </section>
+            
+            <section class="features">
+                <div class="feature-card">
+                    <h3>Predictive Models</h3>
+                    <p>Advanced algorithms to analyze market data and predict optimal covered call opportunities.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Real-time Data</h3>
+                    <p>Access to live market data for informed decision making.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Risk Management</h3>
+                    <p>Built-in tools to help manage and minimize trading risks.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Covered Call App. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
