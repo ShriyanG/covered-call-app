@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import Blueprint, jsonify, render_template, request
 
 # Create a Blueprint for routes
@@ -6,39 +8,42 @@ main = Blueprint('main', __name__)
 # Home route
 @main.route('/')
 def home():
-    return render_template("index.html")  # Simple HTML page (can be empty for now)
+    today = date.today().strftime('%B %d, %Y')
+    return render_template("dashboard.html", today_date=today)
 
 # Predict route
-@main.route('/predict', methods=['POST'])
+@main.route('/predict', methods=['GET', 'POST'])
 def predict():
-    """
-    Endpoint to get option predictions.
-    Expects JSON input: { "ticker": "AMZN", "option_type": "call" }
-    """
-    data = request.get_json()
-    ticker = data.get('ticker')
-    option_type = data.get('option_type')
-
-    if not ticker or not option_type:
-        return jsonify({"error": "Missing ticker or option_type"}), 400
-
-    # Placeholder logic
-    prediction_result = {
-        "ticker": ticker,
-        "option_type": option_type,
-        "prediction": None,
-        "probabilities": None,
-        "option_strike_price": None
-    }
-
-    # TODO: Call your analysis.predict_option function here
-    return jsonify(prediction_result), 200
+    tickers = ['AMZN', 'AAPL', 'GOOG', 'MSFT']  # Example tickers, replace with dynamic source if needed
+    if request.method == 'POST':
+        ticker = request.form.get('ticker')
+        option_type = request.form.get('option_type')
+        # Placeholder prediction logic
+        prediction = 'Up' if option_type == 'call' else 'Down'
+        # You can update the table data here or return JSON
+        return render_template("dashboard.html", today_date=date.today().strftime('%B %d, %Y'), prediction_result={
+            'ticker': ticker,
+            'option_type': option_type,
+            'prediction': prediction
+        }, tickers=tickers)
+    return render_template("dashboard.html", today_date=date.today().strftime('%B %d, %Y'), tickers=tickers)
 
 # Update models route
-@main.route('/update-models')
+@main.route('/update-models', methods=['POST'])
 def update_models():
-    return render_template("update_models.html")
+    # Call your update_models script here
+    # Example: from src.update_models import update_models_func
+    # result = update_models_func()
+    # Simulate long-running task
+    import time
+    time.sleep(2)  # Remove or replace with actual update logic
+    # Return JSON response
+    return jsonify({'status': 'Models updated successfully!', 'last_update': date.today().strftime('%B %d, %Y')})
 
 @main.route('/update-options')
 def update_options():
     return render_template("update_options.html")
+
+@main.route('/analyze-performance')
+def analyze_performance():
+    return render_template("analyze_performance.html")

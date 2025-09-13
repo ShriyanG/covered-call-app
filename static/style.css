@@ -1,0 +1,48 @@
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+.navbar { background: #1a237e; color: #fff; padding: 16px 0; text-align: center; font-size: 1.2em; }
+.container { max-width: 800px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+h1 { text-align: center; color: #333; }
+.dashboard-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 40px; }
+.card { background: #e3eafc; padding: 20px 40px; border-radius: 6px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07); transition: background 0.2s; cursor: pointer; text-decoration: none; color: #1a237e; font-size: 1.2em; display: flex; flex-direction: column; align-items: center; }
+.card:hover { background: #bbdefb; }
+.card:focus, .card:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+button.card {
+    border: none;
+    background: #e3eafc;
+    padding: 20px 40px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: background 0.2s;
+    cursor: pointer;
+    color: #1a237e;
+    font-size: 1.2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+button.card:hover {
+    background: #bbdefb;
+}
+.header { text-align: center; margin-bottom: 20px; }
+.date { color: #555; font-size: 1.1em; }
+.status { margin: 20px 0; text-align: center; }
+.status-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: #4caf50; }
+.table-container { margin: 30px 0; }
+table { width: 100%; border-collapse: collapse; background: #fafafa; }
+th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+th { background: #e3eafc; }
+.form-section { margin: 30px 0; text-align: center; }
+.form-section input, .form-section select { padding: 8px; margin: 0 8px; border-radius: 4px; border: 1px solid #ccc; }
+.form-section button { padding: 8px 16px; border-radius: 4px; border: none; background: #1a237e; color: #fff; cursor: pointer; }
+.form-section button:hover { background: #3949ab; }
+.alert { padding: 12px; background: #ffecb3; color: #795548; border-radius: 4px; margin-bottom: 20px; text-align: center; }
+.spinner { display: none; margin: 0 auto 20px auto; border: 4px solid #e3eafc; border-top: 4px solid #1a237e; border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@media (max-width: 600px) {
+    .container { padding: 10px; }
+    .dashboard-links { flex-direction: column; gap: 16px; }
+}
