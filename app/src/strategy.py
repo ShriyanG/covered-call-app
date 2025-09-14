@@ -176,6 +176,8 @@ class Strategy:
         successful_trade_profit = 0
         negative_trades = 0
         neutral_trades = 0
+        profit_curve = []
+        cumulative_profit = 0
 
         for idx, row in options_data.iterrows():
             opening_price = row['open'] * 100
@@ -190,6 +192,8 @@ class Strategy:
             if high_price >= opening_price + stop_loss: 
                 loss = (opening_price - (opening_price + stop_loss)) 
                 profit += loss
+                cumulative_profit += loss
+                profit_curve.append({"date": idx, "profit": cumulative_profit})
                 total_trades += 1
                 stop_losses_hit += 1
                 continue
@@ -197,6 +201,8 @@ class Strategy:
             # Calculate profit or loss if stop loss is not triggered
             trade_profit = (opening_price - closing_price)
             profit += trade_profit
+            cumulative_profit += trade_profit
+            profit_curve.append({"date": idx, "profit": cumulative_profit})
             total_trades += 1
 
             if closing_price < opening_price:
@@ -225,6 +231,7 @@ class Strategy:
             'neutral_trades': neutral_trades,
             'success_rate': (successful_trades / total_trades * 100) if total_trades > 0 else 0,
             'avg_gain_per_successful_trade': avg_gain_per_successful_trade,
+            'profit_curve': profit_curve,
         }
 
     def predict_option(self, ticker, option_type, deviation=5, upper_threshold=0.6, lower_threshold=0.35):

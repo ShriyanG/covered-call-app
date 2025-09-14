@@ -22,21 +22,6 @@
         <div id="log"></div>
         <div class="alert" id="alert" style="display:none;">This is a notification message.</div>
         <div class="spinner" id="spinner"></div>
-        <div class="form-section">
-            <form id="predict-form" method="POST" action="/predict">
-                <select name="ticker">
-                    {% for ticker in tickers %}
-                        <option value="{{ ticker }}">{{ ticker }}</option>
-                    {% endfor %}
-                </select>
-                <select name="option_type">
-                    <option value="call">Call</option>
-                    <option value="put">Put</option>
-                    <option value="both">Both</option>
-                </select>
-                <button type="submit">Predict</button>
-            </form>
-        </div>
         <div class="dashboard-links">
             <button class="card" id="update-models-btn" type="button"><i class="fas fa-sync-alt fa-2x"></i> Update Models</button>
             <a class="card" href="/predict"><i class="fas fa-lightbulb fa-2x"></i> Daily Options</a>

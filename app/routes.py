@@ -4,6 +4,7 @@ from datetime import date
 from flask import Blueprint, jsonify, render_template, request
 
 from app.src.config.settings import OPTIONS_TICKERS
+from app.src.scripts.backtest import run_backtest
 from app.src.scripts.get_latest_date import get_latest_dates
 from app.src.scripts.predict import predict_daily_options, predict_options
 from app.src.scripts.update_models import run_update_models
@@ -85,6 +86,19 @@ def daily_options():
 def update_options():
     return render_template("update_options.html")
 
+# API endpoint for backtest
+@main.route('/api/backtest', methods=['POST'])
+def api_backtest():
+    data = request.get_json()
+    ticker = data.get('ticker')
+    start_date = data.get('start_date')
+    end_date = data.get('end_date')
+    base_deviation = float(data.get('deviation', 0))
+    option_type = data.get('option_type')
+    stop_loss = float(data.get('stop_loss', 0))
+    results = run_backtest(ticker, start_date, end_date, base_deviation, option_type, stop_loss)
+    return jsonify(results)
+
 @main.route('/analyze-performance')
 def analyze_performance():
-    return render_template("analyze_performance.html")
+    return render_template("analyze_performance.html", OPTIONS_TICKERS=OPTIONS_TICKERS)
