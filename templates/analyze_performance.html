@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyze Performance</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #f8f9fa; font-family: 'Segoe UI', Arial, sans-serif; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px; }
+        h2 { text-align: center; margin-bottom: 32px; color: #007bff; }
+        .form-section label { display: block; margin-top: 18px; font-weight: 500; color: #333; }
+        .form-section input, .form-section select { width: 100%; padding: 8px 10px; margin-top: 6px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; }
+        .form-section button { margin-top: 28px; width: 100%; background: #007bff; color: #fff; border: none; border-radius: 5px; padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .form-section button:hover { background: #0056b3; }
+        #backtest-results { margin-top: 32px; font-size: 1.05rem; color: #222; }
+        #backtest-chart { margin-top: 32px; }
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .back-btn:hover {
+            background: linear-gradient(90deg, #0056b3 0%, #007bff 100%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <button onclick="window.location.href='/'" class="back-btn">&larr; Back to Dashboard</button>
+    <h2 style="clear:both;">Analyze Performance</h2>
+        <form id="backtest-form" class="form-section">
+            <div id="backtest-loading" style="display:none; color:#007bff; font-weight:bold; margin-bottom:10px;">Calculating backtest...</div>
+            <label for="ticker">Ticker:</label>
+            <select id="ticker" name="ticker" required>
+                {% for ticker in OPTIONS_TICKERS %}
+                    <option value="{{ ticker }}">{{ ticker }}</option>
+                {% endfor %}
+            </select>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start_date" required>
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end_date" required>
+            <label for="option-type">Option Type:</label>
+            <select id="option-type" name="option_type">
+                <option value="call">CALL</option>
+                <option value="put">PUT</option>
+            </select>
+            <label for="deviation">Deviation:</label>
+            <input type="number" id="deviation" name="deviation" step="0.01" required>
+            <label for="stop-loss">Stop Loss:</label>
+            <input type="number" id="stop-loss" name="stop_loss" step="0.01" required>
+            <button type="submit">Back Test</button>
+        </form>
+        <div id="backtest-results"></div>
+        <canvas id="backtest-chart" width="600" height="300"></canvas>
+    </div>
+    <script src="/static/analyze-performance.js"></script>
+</body>
+</html>

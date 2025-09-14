@@ -1,0 +1,13 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+joblib
+sqlalchemy
+tqdm
+psycopg2-binary
+requests
+supabase
+flask
+pandas_market_calendars

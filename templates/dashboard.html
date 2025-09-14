@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covered Call Dashboard</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">Covered Call App Navigation</div>
+    <div class="container">
+        <div class="header">
+            <h1>Covered Call App Dashboard</h1>
+        </div>
+        <div class="status">
+            <span class="status-indicator"></span> Checking model status...
+        </div>
+        <span id="last-update" style="display:none;">{{ latest_date }}</span>
+        <span id="last-market-day" style="display:none;">{{ last_market_day }}</span>
+        <div id="log"></div>
+        <div class="alert" id="alert" style="display:none;">This is a notification message.</div>
+        <div class="spinner" id="spinner"></div>
+        <div class="dashboard-links">
+            <button class="card" id="update-models-btn" type="button"><i class="fas fa-sync-alt fa-2x"></i> Update Models</button>
+            <a class="card" href="/predict"><i class="fas fa-lightbulb fa-2x"></i> Daily Options</a>
+            <a class="card" href="/analyze-performance"><i class="fas fa-chart-bar fa-2x"></i> Analyze Performance</a>
+            <!-- Add more dashboard links as needed -->
+        </div>
+    <div id="daily-options-status" style="display:none; color:#007bff; font-weight:bold; margin-bottom:10px;">Calculating daily options...</div>
+    <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Option Type</th>
+                        <th>Date</th>
+                        <th>Strike Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if prediction_result %}
+                        <tr>
+                            <td>{{ prediction_result.ticker }}</td>
+                            <td>{{ prediction_result.option_type }}</td>
+                            <td>{{ prediction_result.date }}</td>
+                            <td>{{ prediction_result.strike_price }}</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
