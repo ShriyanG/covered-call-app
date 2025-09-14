@@ -1,6 +1,11 @@
+import time
 from datetime import date
 
 from flask import Blueprint, jsonify, render_template, request
+
+from app.src.config.settings import OPTIONS_TICKERS
+from app.src.scripts.get_latest_date import get_latest_dates
+from app.src.utils.utils import format_date
 
 # Create a Blueprint for routes
 main = Blueprint('main', __name__)
@@ -9,12 +14,15 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def home():
     today = date.today().strftime('%B %d, %Y')
-    return render_template("dashboard.html", today_date=today)
+    latest_date, last_market_day = get_latest_dates()
+    formatted_latest = format_date(latest_date)
+    formatted_market = format_date(last_market_day)
+    return render_template("dashboard.html", today_date=today, latest_date=formatted_latest, last_market_day=formatted_market, tickers=OPTIONS_TICKERS)
 
 # Predict route
 @main.route('/predict', methods=['GET', 'POST'])
 def predict():
-    tickers = ['AMZN', 'AAPL', 'GOOG', 'MSFT']  # Example tickers, replace with dynamic source if needed
+    tickers = OPTIONS_TICKERS  # Use the dynamic tickers from settings
     if request.method == 'POST':
         ticker = request.form.get('ticker')
         option_type = request.form.get('option_type')
@@ -35,7 +43,6 @@ def update_models():
     # Example: from src.update_models import update_models_func
     # result = update_models_func()
     # Simulate long-running task
-    import time
     time.sleep(2)  # Remove or replace with actual update logic
     # Return JSON response
     return jsonify({'status': 'Models updated successfully!', 'last_update': date.today().strftime('%B %d, %Y')})

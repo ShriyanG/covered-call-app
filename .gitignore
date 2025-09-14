@@ -5,3 +5,4 @@ __pycache__/
 
 # Ignore configuration files
 config/settings.py
+app/config.py

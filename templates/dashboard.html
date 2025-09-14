@@ -12,13 +12,14 @@
     <div class="navbar">Covered Call App Navigation</div>
     <div class="container">
         <div class="header">
-            <h2>Welcome!</h2>
-            <div class="date">Today's date: {{ today_date }}</div>
+            <h1>Covered Call App Dashboard</h1>
         </div>
-        <h1>Covered Call App Dashboard</h1>
         <div class="status">
-            <span class="status-indicator"></span> Model Status: Up-to-date | Last updated: <span id="last-update">--</span>
+            <span class="status-indicator"></span> Checking model status...
         </div>
+        <span id="last-update" style="display:none;">{{ latest_date }}</span>
+        <span id="last-market-day" style="display:none;">{{ last_market_day }}</span>
+        <div id="log"></div>
         <div class="alert" id="alert" style="display:none;">This is a notification message.</div>
         <div class="spinner" id="spinner"></div>
         <div class="form-section">
@@ -38,7 +39,7 @@
         </div>
         <div class="dashboard-links">
             <button class="card" id="update-models-btn" type="button"><i class="fas fa-sync-alt fa-2x"></i> Update Models</button>
-            <a class="card" href="/predict"><i class="fas fa-lightbulb fa-2x"></i> Predict Options</a>
+            <a class="card" href="/predict"><i class="fas fa-lightbulb fa-2x"></i> Daily Options</a>
             <a class="card" href="/analyze-performance"><i class="fas fa-chart-bar fa-2x"></i> Analyze Performance</a>
             <!-- Add more dashboard links as needed -->
         </div>
@@ -62,30 +63,6 @@
             </table>
         </div>
     </div>
-    <script>
-        // Example JS for spinner, alert, and last update
-        document.getElementById('predict-form').onsubmit = function(e) {
-            document.getElementById('spinner').style.display = 'block';
-        };
-        document.getElementById('last-update').textContent = 'September 13, 2025'; // Replace with dynamic value
-
-        // AJAX for Update Models
-        document.getElementById('update-models-btn').onclick = function() {
-            document.getElementById('spinner').style.display = 'block';
-            fetch('/update-models', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('spinner').style.display = 'none';
-                    document.getElementById('alert').style.display = 'block';
-                    document.getElementById('alert').textContent = data.status;
-                    document.getElementById('last-update').textContent = data.last_update;
-                })
-                .catch(() => {
-                    document.getElementById('spinner').style.display = 'none';
-                    document.getElementById('alert').style.display = 'block';
-                    document.getElementById('alert').textContent = 'Error updating models.';
-                });
-        };
-    </script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>

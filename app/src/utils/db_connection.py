@@ -6,7 +6,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from supabase import create_client
 
-from config.settings import (
+from app.src.config.settings import (
     DATABASE_URL_LOCAL,
     STOCK_TABLE,
     SUPABASE_API_KEY,

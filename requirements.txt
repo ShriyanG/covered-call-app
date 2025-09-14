@@ -10,3 +10,4 @@ psycopg2-binary
 requests
 supabase
 flask
+pandas_market_calendars

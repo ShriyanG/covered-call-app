@@ -41,6 +41,43 @@ th { background: #e3eafc; }
 .form-section button:hover { background: #3949ab; }
 .alert { padding: 12px; background: #ffecb3; color: #795548; border-radius: 4px; margin-bottom: 20px; text-align: center; }
 .spinner { display: none; margin: 0 auto 20px auto; border: 4px solid #e3eafc; border-top: 4px solid #1a237e; border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; }
+#log {
+    background: #fff;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 20px;
+    min-height: 40px;
+    font-size: 1em;
+    color: #333;
+    font-family: 'Fira Mono', 'Consolas', monospace;
+}
+#log div {
+    margin-bottom: 6px;
+    padding-left: 24px;
+    position: relative;
+}
+#log .step {
+    color: #1a237e;
+    font-weight: bold;
+}
+#log .success {
+    color: #388e3c;
+}
+#log .error {
+    color: #d32f2f;
+}
+#log .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #e3eafc;
+    border-top: 3px solid #1a237e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
 @keyframes spin { 100% { transform: rotate(360deg); } }
 @media (max-width: 600px) {
     .container { padding: 10px; }
