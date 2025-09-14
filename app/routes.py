@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, render_template, request
 
 from app.src.config.settings import OPTIONS_TICKERS
 from app.src.scripts.get_latest_date import get_latest_dates
+from app.src.scripts.predict import predict_daily_options, predict_options
 from app.src.scripts.update_models import run_update_models
 from app.src.scripts.update_options_data import run_update_options_data
 from app.src.scripts.update_stock_data import run_update_stock_data
@@ -63,7 +64,23 @@ def predict():
         }, tickers=tickers)
     return render_template("dashboard.html", today_date=date.today().strftime('%B %d, %Y'), tickers=tickers)
 
-
+# API endpoint to predict daily options
+@main.route('/api/daily-options', methods=['POST'])
+def daily_options():
+    results = predict_daily_options()
+    table_results = []
+    for r in results:
+        table_results.append({
+            'ticker': r.get('ticker'),
+            'option_type': r.get('option_type'),
+            'date': r.get('date', ''),
+            'strike_price': r.get('option_strike_price'),
+        })
+    return jsonify({
+        'success': True,
+        'message': 'Daily options prediction completed.',
+        'results': table_results
+    })
 @main.route('/update-options')
 def update_options():
     return render_template("update_options.html")

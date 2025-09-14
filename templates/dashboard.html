@@ -43,21 +43,25 @@
             <a class="card" href="/analyze-performance"><i class="fas fa-chart-bar fa-2x"></i> Analyze Performance</a>
             <!-- Add more dashboard links as needed -->
         </div>
-        <div class="table-container">
+    <div id="daily-options-status" style="display:none; color:#007bff; font-weight:bold; margin-bottom:10px;">Calculating daily options...</div>
+    <div class="table-container">
             <table>
                 <thead>
-                    <tr><th>Ticker</th><th>Option Type</th><th>Prediction</th></tr>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Option Type</th>
+                        <th>Date</th>
+                        <th>Strike Price</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% if prediction_result %}
                         <tr>
                             <td>{{ prediction_result.ticker }}</td>
                             <td>{{ prediction_result.option_type }}</td>
-                            <td>{{ prediction_result.prediction }}</td>
+                            <td>{{ prediction_result.date }}</td>
+                            <td>{{ prediction_result.strike_price }}</td>
                         </tr>
-                    {% else %}
-                        <tr><td>AMZN</td><td>Call</td><td>Up</td></tr>
-                        <tr><td>AAPL</td><td>Put</td><td>Down</td></tr>
                     {% endif %}
                 </tbody>
             </table>

@@ -3,9 +3,9 @@ import math
 import pandas as pd
 from sqlalchemy import create_engine
 
-from config.settings import STOCK_TABLE
-from src.analysis import Analysis
-from src.data_inputs import DataInputs  # Import DataInputs
+from app.src.analysis import Analysis
+from app.src.config.settings import STOCK_TABLE
+from app.src.data_inputs import DataInputs  # Import DataInputs
 
 
 class Strategy:
@@ -282,14 +282,15 @@ class Strategy:
 
         print(f"Option strike price to purchase for {option_type.upper()} option: {option_strike_price}")
 
-        return {
+        result = {
             "ticker": ticker,
-            "option_type": option_type,
+            "option_type": option_type.upper(),
             "prediction": prediction[0],
             "probabilities": prediction_proba[0],
             "deviation": deviation,
             "option_strike_price": option_strike_price,
         }
+        return self.data_inputs.db_connection.clean_prediction_result(result)
 
 
 if __name__ == "__main__":

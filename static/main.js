@@ -1,3 +1,36 @@
+// AJAX for Daily Options button
+function setupDailyOptions() {
+    const dailyOptionsBtn = document.querySelector('a.card[href="/predict"]');
+    if (dailyOptionsBtn) {
+        dailyOptionsBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const statusDiv = document.getElementById('daily-options-status');
+            if (statusDiv) {
+                statusDiv.style.display = 'block';
+            }
+            let response = await fetch('/api/daily-options', { method: 'POST' });
+            let data = await response.json();
+            // Update table with results
+            const tableBody = document.querySelector('.table-container table tbody');
+            tableBody.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.ticker}</td>
+                        <td>${row.option_type}</td>
+                        <td>${row.date}</td>
+                        <td>${row.strike_price}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+            if (statusDiv) {
+                setTimeout(() => { statusDiv.style.display = 'none'; }, 500);
+            }
+        });
+    }
+}
 // main.js - For dynamic AJAX/Javascript functions
 
 // Spinner, alert, and last update for prediction form
@@ -79,6 +112,7 @@ function setModelStatus(latestDate, lastMarketDay) {
 function initializeDashboard() {
     setupPredictForm();
     setupUpdateModels();
+    setupDailyOptions();
     // You need to pass latestDate and lastMarketDay from backend via template variables
     const latestDate = document.getElementById('last-update')?.textContent;
     const lastMarketDay = document.getElementById('last-market-day')?.textContent;

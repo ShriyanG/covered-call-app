@@ -2,6 +2,7 @@ import io
 import os
 
 import joblib
+import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine
 from supabase import create_client
@@ -71,6 +72,21 @@ class DBConnection:
             return {"success": True, "message": f"Successfully uploaded {file_name} for {ticker}."}
         else:
             return {"success": False, "message": f"Failed to upload {file_name} for {ticker}. Response: {response}"}
+
+
+    def clean_prediction_result(self, result):
+        """
+        Convert NumPy types in prediction result to native Python types for JSON serialization.
+        """
+        clean = {}
+        for k, v in result.items():
+            if isinstance(v, np.generic):
+                clean[k] = v.item()
+            elif isinstance(v, np.ndarray):
+                clean[k] = v.tolist()
+            else:
+                clean[k] = v
+        return clean
 
 
 # Test the connection and query loader
