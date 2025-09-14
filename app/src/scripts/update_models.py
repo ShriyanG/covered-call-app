@@ -1,13 +1,17 @@
-import os
+from app.src.analysis import Analysis
+from app.src.config.settings import FEATURES, TICKERS
 
-from config.settings import FEATURES, TICKERS
-from src.analysis import Analysis
+
+def run_update_models():
+    analysis = Analysis()
+    try:
+        for ticker in TICKERS:
+            analysis.update_models(ticker, FEATURES)
+        status = {"success": True, "message": "Model and features for all tickers updated and saved."}
+    except Exception as e:
+        status = {"success": False, "message": f"An error occurred while updating models: {e}"}
+    return status
 
 if __name__ == "__main__":
-    # Initialize the Analysis class
-    analysis = Analysis()
-    # Run Random Forest analysis for each ticker
-    for ticker in TICKERS:
-        print(f"\nRunning Random Forest analysis for ticker: {ticker}")
-        analysis.update_models(ticker, FEATURES)
-        print(f"Model and features for {ticker} updated and saved.\n")
+    result = run_update_models()
+    print(result["message"])

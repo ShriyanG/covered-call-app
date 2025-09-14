@@ -27,32 +27,33 @@ function setupUpdateModels() {
             document.getElementById('spinner').style.display = 'block';
             const logDiv = document.getElementById('log');
             logDiv.innerHTML = '';
+
             // Step 1: Update stock data
             appendLog('Updating stock data table...', 'step');
-            await new Promise(r => setTimeout(r, 1000)); // Simulate AJAX
-            appendLog('Stock data table updated.', 'success');
+            let stockRes = await fetch('/api/update-stock-data', { method: 'POST' });
+            let stockData = await stockRes.json();
+            appendLog(stockData.message, stockData.success ? 'success' : 'error');
+
             // Step 2: Update option data
             appendLog('Updating option data table...', 'step');
-            await new Promise(r => setTimeout(r, 1000)); // Simulate AJAX
-            appendLog('Option data table updated.', 'success');
+            let optionsRes = await fetch('/api/update-options-data', { method: 'POST' });
+            let optionsData = await optionsRes.json();
+            appendLog(optionsData.message, optionsData.success ? 'success' : 'error');
+
             // Step 3: Update models
             appendLog('Updating models...', 'step');
-            fetch('/update-models', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('spinner').style.display = 'none';
-                    appendLog('Models updated.', 'success');
-                    document.getElementById('alert').style.display = 'block';
-                    document.getElementById('alert').textContent = data.status;
-                    setTimeout(() => { logDiv.innerHTML = ''; }, 2000); // Hide log after 2 seconds
-                })
-                .catch(() => {
-                    document.getElementById('spinner').style.display = 'none';
-                    appendLog('Error updating models.', 'error');
-                    document.getElementById('alert').style.display = 'block';
-                    document.getElementById('alert').textContent = 'Error updating models.';
-                    setTimeout(() => { logDiv.innerHTML = ''; }, 2000); // Hide log after 2 seconds
-                });
+            let modelsRes = await fetch('/api/update-models', { method: 'POST' });
+            let modelsData = await modelsRes.json();
+            appendLog(modelsData.message, modelsData.success ? 'success' : 'error');
+
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('alert').style.display = 'block';
+            document.getElementById('alert').textContent = modelsData.message;
+
+            // Update dashboard status and dates
+            setModelStatus(modelsData.latest_date, modelsData.last_market_day);
+
+            setTimeout(() => { logDiv.innerHTML = ''; }, 2000); // Hide log after 2 seconds
         };
     }
 }

@@ -5,6 +5,9 @@ from flask import Blueprint, jsonify, render_template, request
 
 from app.src.config.settings import OPTIONS_TICKERS
 from app.src.scripts.get_latest_date import get_latest_dates
+from app.src.scripts.update_models import run_update_models
+from app.src.scripts.update_options_data import run_update_options_data
+from app.src.scripts.update_stock_data import run_update_stock_data
 from app.src.utils.utils import format_date
 
 # Create a Blueprint for routes
@@ -19,6 +22,30 @@ def home():
     formatted_market = format_date(last_market_day)
     return render_template("dashboard.html", today_date=today, latest_date=formatted_latest, last_market_day=formatted_market, tickers=OPTIONS_TICKERS)
 
+# API endpoint to update stock data
+@main.route('/api/update-stock-data', methods=['POST'])
+def update_stock_data():
+    result = run_update_stock_data()
+    return jsonify(result)
+
+# API endpoint to update options data
+@main.route('/api/update-options-data', methods=['POST'])
+def update_options_data():
+    result = run_update_options_data()
+    return jsonify(result)
+
+# API endpoint to update models
+@main.route('/api/update-models', methods=['POST'])
+def update_models():
+    result = run_update_models()
+    latest_date, last_market_day = get_latest_dates()
+    formatted_latest = format_date(latest_date)
+    formatted_market = format_date(last_market_day)
+    result.update({
+        'latest_date': formatted_latest,
+        'last_market_day': formatted_market
+    })
+    return jsonify(result)
 # Predict route
 @main.route('/predict', methods=['GET', 'POST'])
 def predict():
@@ -36,16 +63,6 @@ def predict():
         }, tickers=tickers)
     return render_template("dashboard.html", today_date=date.today().strftime('%B %d, %Y'), tickers=tickers)
 
-# Update models route
-@main.route('/update-models', methods=['POST'])
-def update_models():
-    # Call your update_models script here
-    # Example: from src.update_models import update_models_func
-    # result = update_models_func()
-    # Simulate long-running task
-    time.sleep(2)  # Remove or replace with actual update logic
-    # Return JSON response
-    return jsonify({'status': 'Models updated successfully!', 'last_update': date.today().strftime('%B %d, %Y')})
 
 @main.route('/update-options')
 def update_options():

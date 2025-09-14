@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import requests
 
-from config.settings import API_KEY  # Import the API key from the config file
+from app.src.config.settings import API_KEY  # Import the API key from the config file
 
 
 class StockAPI:

@@ -57,31 +57,20 @@ class DBConnection:
     def upload_to_supabase(self, obj, ticker: str, file_name: str, bucket_name: str = SUPABASE_BUCKET):
         """
         Serialize a Python object with joblib and upload it to Supabase storage.
-
-        Parameters:
-        - bucket_name (str): Name of the Supabase storage bucket.
-        - remote_path (str): Path inside the bucket where the file should be stored.
-        - obj: The Python object (e.g., model, list, dict) to be serialized and uploaded.
         """
-        # Create a client
         supabase = create_client(SUPABASE_STORAGE_URL, SUPABASE_API_KEY)
         bucket = supabase.storage.from_(bucket_name)
-
         remote_path = f"{ticker}/{file_name}"
 
-        # Serialize object to an in-memory buffer
         buffer = io.BytesIO()
         joblib.dump(obj, buffer)
         buffer.seek(0)
 
-        # Upload buffer contents, overwrite if exists
         response = bucket.upload(remote_path, buffer.read(), file_options={"upsert": "true"})
-        # Check response status code
-        status_code = getattr(response, "status_code", None)
-        if status_code == 200 or status_code == 201:
-            print(f"Successfully uploaded {file_name} for {ticker} to '{bucket_name}' bucket.")
+        if hasattr(response, "path") and response.path:
+            return {"success": True, "message": f"Successfully uploaded {file_name} for {ticker}."}
         else:
-            print(f"Failed to upload {file_name} for {ticker} to '{bucket_name}' bucket. Status code: {status_code}")
+            return {"success": False, "message": f"Failed to upload {file_name} for {ticker}. Response: {response}"}
 
 
 # Test the connection and query loader

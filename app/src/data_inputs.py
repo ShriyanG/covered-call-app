@@ -4,15 +4,15 @@ from datetime import datetime, timedelta
 import pandas as pd
 from sqlalchemy import text  # Import `text` from SQLAlchemy
 
-from config.settings import (
+from app.src.config.settings import (
     API_KEY,
     OPTIONS_TABLE,
     OPTIONS_TICKERS,
     STOCK_TABLE,
     TICKERS,
 )
-from src.utils.db_connection import DBConnection
-from src.utils.stock_api import StockAPI
+from app.src.utils.db_connection import DBConnection
+from app.src.utils.stock_api import StockAPI
 
 
 class DataInputs:

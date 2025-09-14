@@ -9,8 +9,12 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from supabase import create_client
 
-from config.settings import SUPABASE_API_KEY, SUPABASE_BUCKET, SUPABASE_STORAGE_URL
-from src.data_inputs import DataInputs
+from app.src.config.settings import (
+    SUPABASE_API_KEY,
+    SUPABASE_BUCKET,
+    SUPABASE_STORAGE_URL,
+)
+from app.src.data_inputs import DataInputs
 
 
 class Analysis:
