@@ -25,8 +25,17 @@ SUPABASE_BUCKET = 'models'
 API_KEY = "RLH5skiQVl24hXBE2IyPT3JBDmorI4r0"
 
 #Table names and other settings
+DEVIATIONS_TABLE = "stock_deviations"
 STOCK_TABLE = "stock_data"
 OPTIONS_TABLE = "options_data"
 TICKERS = ['AMZN', 'MSFT', 'TSLA', 'GOOG', 'NVDA', 'META', 'AAPL', 'QQQ', 'SPY']
 OPTIONS_TICKERS = ['QQQ', 'SPY']
 FEATURES = ['rsi_30_diff', 'rsi_70_diff', 'macd', 'price_diff', 'histogram', 'signal', 'rsi', 'bollinger_upper', 'bollinger_lower', 'sma', 'ema_12', 'ema_26']
+
+# NUMERIC SETTINGS
+STOP_LOSS = 200  # Stop loss in dollars
+BASE_DEVIATION = 5  # Default base deviation in dollars
+DEVIATION_BUFFER = 1  # Buffer to add to average deviation
+UPPER_THRESHOLD = 0.6  # Threshold to decide 'call' option
+LOWER_THRESHOLD = 0.35  # Threshold to decide 'put' option
+BEGINNING_DATE = "2023-05-10"  # Date to start fetching stock data from

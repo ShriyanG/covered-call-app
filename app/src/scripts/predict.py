@@ -41,7 +41,6 @@ def predict_daily_options(option_type="both"):
     """
     results = []
     next_market_day = get_next_nyse_business_day()
-    next_market_day_str = next_market_day.strftime('%Y-%m-%d')
     for ticker in OPTIONS_TICKERS:
         for opt in ["call", "put"]:
             prediction = predict_options(ticker, opt)

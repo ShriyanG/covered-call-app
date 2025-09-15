@@ -4,7 +4,13 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 from app.src.analysis import Analysis
-from app.src.config.settings import STOCK_TABLE
+from app.src.config.settings import (
+    BASE_DEVIATION,
+    LOWER_THRESHOLD,
+    STOCK_TABLE,
+    STOP_LOSS,
+    UPPER_THRESHOLD,
+)
 from app.src.data_inputs import DataInputs  # Import DataInputs
 
 
@@ -17,7 +23,7 @@ class Strategy:
         self.analysis = Analysis()  # Initialize Analysis
 
     def calc_deviation(self, row, classification_data, model, features, base_deviation,
-                       upper_threshold=0.6, lower_threshold=0.35):
+                       upper_threshold=UPPER_THRESHOLD, lower_threshold=LOWER_THRESHOLD):
         """
         Calculate deviation dynamically based on model prediction and confidence,
         using asymmetric thresholds and rounding to nearest integer for strike prices.
@@ -109,7 +115,7 @@ class Strategy:
 
         return options_df
 
-    def load_data(self, ticker, start_date, end_date, base_deviation=0, option_type='call'):
+    def load_data(self, ticker, start_date, end_date, base_deviation=BASE_DEVIATION, option_type='call'):
         """
         Load stock data for the given ticker and date range, and calculate options.
 
@@ -149,7 +155,7 @@ class Strategy:
         options_data = self.calculate_options(stock_data, deviation=stock_data['deviation'], option_type=option_type)
         return options_data
 
-    def backtest(self, ticker, start_date, end_date, base_deviation=0, option_type='call', stop_loss=50):
+    def backtest(self, ticker, start_date, end_date, base_deviation=BASE_DEVIATION, option_type='call', stop_loss=STOP_LOSS):
         """
         Run the backtest strategy for selling same-day call options.
 
@@ -261,12 +267,12 @@ class Strategy:
         prediction = model.predict(input_data)
         prediction_proba = model.predict_proba(input_data)
 
-        # Calculate the deviation to determine the exact option to purchase
-        base_deviation = deviation
-        upper_threshold = upper_threshold
-        lower_threshold = lower_threshold
+        # Fetch base deviation from DB
+        base_deviation = self.data_inputs.get_stock_deviation(ticker)
+        if base_deviation is None:
+            base_deviation = deviation
 
-        # Call calc_deviation
+        # Calculate the deviation to determine the exact option to purchase
         deviation = self.calc_deviation(
             row=last_row.iloc[0],  
             classification_data=recent_data,
@@ -305,9 +311,9 @@ if __name__ == "__main__":
     ticker = "QQQ"
     start_date = "2025-01-01"
     end_date = "2025-09-12"
-    base_deviation = 5
+    base_deviation = BASE_DEVIATION
     option_type = "call"
-    stop_loss = 200
+    stop_loss = STOP_LOSS
     backtest_results = strategy.backtest(ticker=ticker, start_date=start_date, end_date=end_date, base_deviation=base_deviation, option_type=option_type, stop_loss=stop_loss)
 
     # Print the backtest results
