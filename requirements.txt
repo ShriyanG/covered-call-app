@@ -11,3 +11,4 @@ requests
 supabase
 flask
 pandas_market_calendars
+python-dotenv
