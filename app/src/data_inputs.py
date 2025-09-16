@@ -1,11 +1,15 @@
 import os
 from datetime import datetime, timedelta
 
+import numpy as np
 import pandas as pd
 from sqlalchemy import text  # Import `text` from SQLAlchemy
 
 from app.src.config.settings import (
     API_KEY,
+    BEGINNING_DATE,
+    DEVIATION_BUFFER,
+    DEVIATIONS_TABLE,
     OPTIONS_TABLE,
     OPTIONS_TICKERS,
     STOCK_TABLE,
@@ -332,3 +336,53 @@ class DataInputs:
         except Exception as e:
             print(f"Error fetching option data for ticker '{ticker}' on '{date}' with strike price '{strike_price}' and option type '{option_type}': {e}")
             return pd.DataFrame()
+
+    def calculate_average_deviation(self, ticker):
+        """
+        Fetches closing prices for ticker for previous x days, calculates average deviation.
+        ticker: str
+        days: int
+        Returns: int (rounded average deviation)
+        """
+        today = datetime.today().strftime('%Y-%m-%d')
+        df = self.get_stock_data(ticker, BEGINNING_DATE, today)
+        if df.empty or 'close_price' not in df.columns:
+            return None
+        prices = df['close_price'].tolist()
+        diffs = np.diff(prices)
+        deviations = np.abs(diffs)
+        avg_deviation = np.mean(deviations) + DEVIATION_BUFFER
+        return int(round(avg_deviation))
+
+    def update_deviations(self):
+        """
+        For each ticker, calculate average deviation and upsert into deviations table using upsert_deviation.sql.
+        """
+        engine = self.db_connection.get_engine()
+        update_query_str = self.db_connection.load_query("update_deviation.sql").format(table_name=DEVIATIONS_TABLE)
+        update_query = text(update_query_str)
+
+        # Execute upserts in a single transaction
+        with engine.begin() as connection:
+            for ticker in TICKERS:
+                avg_dev = self.calculate_average_deviation(ticker)
+                if avg_dev is not None:
+                    connection.execute(update_query, {"ticker": ticker, "deviation": avg_dev})
+
+    def get_stock_deviation(self, ticker):
+        """
+        Fetch the numeric deviation for a given ticker from the deviations table.
+        Returns the deviation as an integer, or None if not found.
+        """
+        try:
+            engine = self.db_connection.get_engine()
+            query = self.db_connection.load_query("get_stock_deviation.sql").format(table_name=DEVIATIONS_TABLE)
+            result = pd.read_sql(query, engine, params=(ticker,))
+            if not result.empty:
+                deviation = result.iloc[0, 0]
+                return int(deviation)
+            else:
+                return None
+        except Exception as e:
+            print(f"Error fetching deviation for ticker '{ticker}': {e}")
+            return None
