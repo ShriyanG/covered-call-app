@@ -10,6 +10,7 @@ from app.src.config.settings import (
     BEGINNING_DATE,
     DEVIATION_BUFFER,
     DEVIATIONS_TABLE,
+    MODEL_TRAINING_START_DATE,
     OPTIONS_TABLE,
     OPTIONS_TICKERS,
     STOCK_TABLE,
@@ -228,11 +229,11 @@ class DataInputs:
             self.input_options_data(ticker)
             print(f"Options data for {ticker} processed successfully.")
 
-    def prepare_classification_data(self, ticker, table_name='stock_data', sma_period=20, backtest=False):
+    def prepare_classification_data(self, ticker, table_name='stock_data', sma_period=20, backtest=False, start_date=MODEL_TRAINING_START_DATE):
         """
         Prepares the classification data for a given ticker from the stock data table.
 
-        The function calculates the absolute difference of RSI from 30 and 70, 
+        The function calculates the absolute difference of RSI from 30 and 70,
         the MACD, the price difference, and the next day's price movement (up/down).
 
         Parameters:
@@ -240,6 +241,7 @@ class DataInputs:
         - table_name (str): The name of the table containing the stock data in SQL (default: 'stock_data').
         - sma_period (int): The period for calculating the simple moving average (default: 20).
         - backtest (bool): If True, include the 'date' column in the returned DataFrame.
+        - start_date (str): Start date for filtering data (default: MODEL_TRAINING_START_DATE from config).
 
         Returns:
         - pd.DataFrame: DataFrame with features and target for classification.
@@ -252,7 +254,7 @@ class DataInputs:
             query = self.db_connection.load_query("get_stock_data_for_classification.sql").format(table_name=table_name)
 
             # Execute the query and fetch the data
-            df = pd.read_sql(query, engine, params=(ticker,))  # Pass parameters as a tuple
+            df = pd.read_sql(query, engine, params=(ticker, start_date))  # Pass parameters as a tuple
 
             # Calculate next day price change
             df['next_day_close'] = df['close_price'].shift(-1)
