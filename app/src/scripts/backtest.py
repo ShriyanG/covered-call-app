@@ -19,11 +19,11 @@ def run_backtest(ticker, start_date, end_date, base_deviation, option_type, stop
 if __name__ == "__main__":
     # Example usage for manual testing
     ticker = "QQQ"
-    start_date = "2025-01-01"
-    end_date = "2025-09-26"
+    start_date = "2026-01-01"
+    end_date = "2026-04-22"
     base_deviation = 5
     option_type = "call"
-    stop_loss = 200
+    stop_loss = 150
     backtest_results = run_backtest(ticker, start_date, end_date, base_deviation, option_type, stop_loss)
     print("\nBacktest Results:")
     for key, value in backtest_results.items():
