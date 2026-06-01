@@ -41,26 +41,29 @@ class Strategy:
         - int: Rounded deviation to add to the current stock price for the call strike.
         """
         date = row.name  # The index of the row (date)
-        if date not in classification_data.index:
-            return None
-
-        classification_row = classification_data.loc[date]
-
-        # Restrict to features used by the model
-        input_data = pd.DataFrame([classification_row[features].to_dict()])
-        prob = model.predict_proba(input_data)[0]
-        prob_down, prob_up = prob
-        confidence = max(prob)
-        if prob_up >= upper_threshold:
-            # Bullish → further OTM
-            deviation = base_deviation * 1.25 * confidence
-        elif prob_up <= lower_threshold:
-            # Bearish → closer to ATM
-            deviation = base_deviation * prob_up
-        else:
-            # Neutral → standard deviation
-            deviation = base_deviation * confidence
-        return deviation
+        # Use a flat base deviation for all rows.
+        # The prior dynamic strategy based on model probability has been disabled.
+        # if date not in classification_data.index:
+        #     return None
+        #
+        # classification_row = classification_data.loc[date]
+        #
+        # # Restrict to features used by the model
+        # input_data = pd.DataFrame([classification_row[features].to_dict()])
+        # prob = model.predict_proba(input_data)[0]
+        # prob_down, prob_up = prob
+        # confidence = max(prob)
+        # if prob_up >= upper_threshold:
+        #     # Bullish → further OTM
+        #     deviation = base_deviation * 1.25 * confidence
+        # elif prob_up <= lower_threshold:
+        #     # Bearish → closer to ATM
+        #     deviation = base_deviation * prob_up
+        # else:
+        #     # Neutral → standard deviation
+        #     deviation = base_deviation * confidence
+        # return deviation
+        return base_deviation
 
     def calculate_options(self, stock_data, deviation, option_type):
         """
@@ -133,23 +136,24 @@ class Strategy:
         stock_data = self.data_inputs.get_stock_data(ticker, start_date, end_date)
 
         # Load the best model for the ticker
-        model, features = self.analysis.load_best_model(ticker)
-        classification_data = self.data_inputs.prepare_classification_data(ticker, backtest=True)
+        # model, features = self.analysis.load_best_model(ticker)
+        # classification_data = self.data_inputs.prepare_classification_data(ticker, backtest=True)
 
         # Set the index of stock_data to 'date'
         if 'date' in stock_data.columns:
             stock_data.set_index('date', inplace=True, drop=False)
 
         # Set the index of classification_data to 'date'
-        if 'date' in classification_data.columns:
-            classification_data.set_index('date', inplace=True, drop=False)
+        # if 'date' in classification_data.columns:
+        #     classification_data.set_index('date', inplace=True, drop=False)
 
-        # Calculate deviation dynamically for each row
-        stock_data['deviation'] = stock_data.apply(
-            lambda row: self.calc_deviation(row, classification_data, model, features, base_deviation), axis=1
-        )
-        # Drop rows where deviation could not be calculated (NaN values)
-        stock_data = stock_data.dropna(subset=['deviation'])
+        # Use a flat deviation equal to the provided base_deviation for every row.
+        # The original dynamic calculation is commented out below.
+        stock_data['deviation'] = base_deviation
+        # stock_data['deviation'] = stock_data.apply(
+        #     lambda row: self.calc_deviation(row, classification_data, model, features, base_deviation), axis=1
+        # )
+        # stock_data = stock_data.dropna(subset=['deviation'])
 
         # Calculate options and return the options DataFrame
         options_data = self.calculate_options(stock_data, deviation=stock_data['deviation'], option_type=option_type)
